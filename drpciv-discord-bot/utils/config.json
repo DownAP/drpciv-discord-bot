@@ -1,0 +1,4 @@
+{
+  "token": "YOUR_TOKEN",
+  "mysql": "Server=SERVER_DNS;User ID=USERNAME;Password=PASSWORD;Database=DB_NAME"
+}
