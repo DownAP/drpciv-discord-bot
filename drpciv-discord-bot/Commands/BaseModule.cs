@@ -63,7 +63,7 @@ namespace drpciv_discord_bot.Commands
             threadId = examThread.Id;
 
             await aDrpciv(Context);
-            
+
         }
 
         public static async Task aDrpciv(Discord.Interactions.SocketInteractionContext Context)
@@ -92,7 +92,7 @@ namespace drpciv_discord_bot.Commands
             string strPattern = @"([^\/]+(jpg|png))";
             Regex regex = new Regex(strPattern);
             MatchCollection matchCollection = regex.Matches((questionsJson[iQuestion].QuestionName));
-            
+
 
             string[] strAnswers = questionsJson[iQuestion].Answer.Split(",");
 
@@ -103,7 +103,7 @@ namespace drpciv_discord_bot.Commands
             var embedd = new EmbedBuilder()
             .WithAuthor("Intrebare #" + mActive[Context.User.Id])
             .WithTitle(questionsJson[iQuestion].QuestionName.Split("<", 2)[0])
-            .AddField("Optiuni",                Emoji.Parse(":regional_indicator_a:").ToString() + (questionsJson[iQuestion].Answer1.Split("A.", 2))[1] + "\n" +
+            .AddField("Optiuni", Emoji.Parse(":regional_indicator_a:").ToString() + (questionsJson[iQuestion].Answer1.Split("A.", 2))[1] + "\n" +
                                                 Emoji.Parse(":regional_indicator_b:").ToString() + (questionsJson[iQuestion].Answer2.Split("B.", 2))[1] + "\n" +
                                                 Emoji.Parse(":regional_indicator_c:").ToString() + (questionsJson[iQuestion].Answer3.Split("C.", 2))[1] + "\n  ")
             .WithFooter(footer => footer.Text = $"Corecte: {mCorrectAnswers[Context.User.Id]}  |  Gresite: {mWrongAnswers[Context.User.Id]}  |  {26 - mQuestionsLeft[Context.User.Id]}/26");
@@ -134,7 +134,7 @@ namespace drpciv_discord_bot.Commands
         public async Task HandleStats()
         {
             int completed = 0, failed = 0;
-            
+
             try
             {
                 MySqlCommand mySqlCommand = new MySqlCommand($"SELECT * FROM `users` WHERE `uid` = {Context.User.Id};");
@@ -142,7 +142,7 @@ namespace drpciv_discord_bot.Commands
                 await Program.mysqlConnection.OpenAsync();
                 mySqlCommand.Connection = Program.mysqlConnection;
                 dataReader = await mySqlCommand.ExecuteReaderAsync();
-                while(dataReader.Read())
+                while (dataReader.Read())
                 {
                     completed = (int)dataReader["completed"];
                     failed = (int)dataReader["failed"];
@@ -150,14 +150,14 @@ namespace drpciv_discord_bot.Commands
                 await dataReader.CloseAsync();
                 await Program.mysqlConnection.CloseAsync();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 await RespondAsync("Oopsie! A plecat baza de date :(");
             }
             var embedd = new EmbedBuilder()
-                .AddField("Statistici", $"{Context.User.Username} ai la activ {completed} teste completate si {failed} teste picate.")
+                .AddField("Statistici", $"{Context.User.Username}, ai la activ {completed} chestionare completate si {failed} chestionare picate.")
                 .WithThumbnailUrl(Context.User.GetAvatarUrl());
-                
+
 
             await RespondAsync(null, embed: embedd.Build());
         }
@@ -228,16 +228,16 @@ namespace drpciv_discord_bot.Commands
                 await Context.Channel.DeleteMessageAsync(userMessage);
             }
 
-            
+
 
             //Check whether the user failed the exam
             var congratsOrNot = new EmbedBuilder();
             if (mWrongAnswers[Context.User.Id] == 5)
             {
-                congratsOrNot.AddField("Respins!", $"{Context.User.Username}, din pacate ai picat :(\nThreadul va fi sters in 5 secunde!");
+                congratsOrNot.AddField("Respins!", $"{Context.User.Username}, din pacate ai picat :(\nThread-ul va fi sters in 5 secunde!");
                 Task.Delay(5000).ContinueWith(t => Context.Guild.GetThreadChannel(threadId).DeleteAsync());
                 SubmitSql("failed");
-                
+
                 mQuestionsLeft.Remove(Context.User.Id);
                 mCorrectAnswers.Remove(Context.User.Id);
                 mWrongAnswers.Remove(Context.User.Id);
@@ -246,13 +246,13 @@ namespace drpciv_discord_bot.Commands
                 await Context.Channel.DeleteMessageAsync(userMessage);
                 return;
             }
-            else if (mQuestionsLeft[Context.User.Id] <= 1 && mCorrectAnswers[Context.User.Id] >= 22)
+            else if (mQuestionsLeft[Context.User.Id] == 0 && mCorrectAnswers[Context.User.Id] >= 22)
             {
-                congratsOrNot.AddField("Admis!", $"Felicitari, {Context.User.Username}, ai obtinut {mCorrectAnswers[Context.User.Id]++} puncte!\nThreadul va fi sters in 5 secunde!");
+                congratsOrNot.AddField("Admis!", $"Felicitari, {Context.User.Username}, ai obtinut {mCorrectAnswers[Context.User.Id]++} puncte!\nThread-ul va fi sters in 5 secunde!");
                 Task.Delay(5000).ContinueWith(t => Context.Guild.GetThreadChannel(threadId).DeleteAsync());
                 SubmitSql("completed");
-                
-                
+
+
                 mQuestionsLeft.Remove(Context.User.Id);
                 mCorrectAnswers.Remove(Context.User.Id);
                 mWrongAnswers.Remove(Context.User.Id);
@@ -284,7 +284,7 @@ namespace drpciv_discord_bot.Commands
             strFooter += $"{(answer.Contains("0") ? Emoji.Parse(":white_check_mark:") : Emoji.Parse(":negative_squared_cross_mark:"))} {Emoji.Parse(":regional_indicator_a:")} {questionsJson[iQuestion].Answer1.Split("A.", 2)[1]} \n";
             strFooter += $"{(answer.Contains("1") ? Emoji.Parse(":white_check_mark:") : Emoji.Parse(":negative_squared_cross_mark:"))} {Emoji.Parse(":regional_indicator_b:")} {questionsJson[iQuestion].Answer2.Split("B.", 2)[1]} \n";
             strFooter += $"{(answer.Contains("2") ? Emoji.Parse(":white_check_mark:") : Emoji.Parse(":negative_squared_cross_mark:"))} {Emoji.Parse(":regional_indicator_c:")} {questionsJson[iQuestion].Answer3.Split("C.", 2)[1]} \n";
-            
+
             return new EmbedBuilder().WithTitle((questionsJson[iQuestion].QuestionName.Split("<", 2))[0])
             .WithFooter(footer => footer.Text = strFooter);
         }
