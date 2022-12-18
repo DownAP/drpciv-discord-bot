@@ -1,7 +1,7 @@
 
 ![](https://images.down.monster/rAjo2/RoyuPAJU65.gif/raw)
-![](https://images.down.monster/rAjo2/sUcIRAQU55.png/raw)
-![](https://images.down.monster/rAjo2/NekEXIco08.png/raw)
+![](https://images.down.monster/rAjo2/XErOJIrA45.png/raw)
+![](https://images.down.monster/rAjo2/XACupAtI01.png/raw)
 > Bot de Discord care simuleaza examenul teoretic pentru categoria B <br />
 <p>
   <a href="https://github.com/DownAP/drpciv-discord-bot/releases/tag/1.0.0" target="_blank">
@@ -65,7 +65,7 @@ sudo rpm -Uvh https://packages.microsoft.com/config/centos/7/packages-microsoft-
 sudo yum install dotnet-sdk-6.0
 ```
 ### Windows
-Instalati [.NET Core runtime](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-6.0.12-windows-x64-installer)
+Instalati [.NET Core Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-6.0.12-windows-x64-installer)
 
 Ghiduri de instalare pentru alte distributii de linux [aici](https://learn.microsoft.com/en-us/dotnet/core/install/linux)
 
